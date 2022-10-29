@@ -1,73 +1,93 @@
-# Obsidian Sample Plugin
+# Obsidian Handlebars Template Plugin
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+This is a plugin for [Obsidian](https://obsidian.md) adding support for the [Handlebars](https://handlebarsjs.com/) template engine in Obsidian notes. It also provides a [Block Helper](https://handlebarsjs.com/guide/block-helpers.html), ['notes'](#notes), that allows iterating through notes in the vault and generating Markdown.
 
-This project uses Typescript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in Typescript Definition format, which contains TSDoc comments describing what it does.
+Because this is a very simple *(yet powerful)* plugin, it is very small and does support mobile.
 
-**Note:** The Obsidian API is still in early alpha and is subject to change at any time!
+## Basic Example
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Changes the default font color to red using `styles.css`.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+Generate Markdown using the variables defined in the YAML frontmatter:
 
-## First time developing plugins?
+`````md
+---
+tags:
+  - cool
+  - awesome
+---
 
-Quick starting guide for new plugin devs:
+```handlebars
+tags: {{#each frontmatter.tags}}{{.}}, {{/each}}
+```
+`````
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+Generating:
 
-## Releasing new releases
+```
+tags: cool, awesome, 
+```
+ 
+Each block runs independently through compilation and rendering. That means that if you define a partial in one block, it won't be useable in another. The context that is provided to each block has the ```NoteMetadata``` interface defined in [main.ts](/main.ts). 
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+```ts
+interface NoteMetadata {
+  'basename': string,
+  'name': string,
+  'path': string, 
+  'extension': string,
+	'frontmatter'?: Record<string, any>
+}
+```
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+## notes
 
-## Adding your plugin to the community plugin list
+Use the provided notes helper to request notes by path. If the request path is a directory, the all the contained files will be returned (not recursive). The context for each returned file item has the NoteMetadata interface and supports ```@index``` as well.
 
-- Check https://github.com/obsidianmd/obsidian-releases/blob/master/plugin-review.md
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+To generate a list of links to all notes in the 'Ideas' folder:
+`````md
+```handlebars
+{{#notes 'Ideas'}}  - {{@index}} [{{name}}]({{path}})
+{{/notes}}
+```
+`````
+## link partial
 
-## How to use
+Use the link partial to generate internal links to notes or files in the vault.
+`````md
+```handlebars
+{{#notes 'Ideas'}}  - {{>link path}}
+{{/notes}}
+```
+`````
 
-- Clone this repo.
-- `npm i` or `yarn` to install dependencies
-- `npm run dev` to start compilation in watch mode.
+The link partial either takes a path to a file as a parameter or takes dictionary parameters to further customize the link. 
+- ```path```: the path to link to
+- ```rel```: the path to the note that will render the link to make it relative instead of absolute
+- ```alias```: alternate name to use for the ink
+- ```hash```: a #hash to use for the link, for deep linking to an anchor in a note
 
-## Manually installing the plugin
+`````md
+```handlebars
+{{#notes 'Ideas'}}  - {{>link path=path rel=../path alias=@index}}
+{{/notes}}
+```
+`````
+## Missing Features
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+> Does it have settings allowing you to define you're own handlerbar partials or helpers?
 
-## Improve code quality with eslint (optional)
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- To use eslint with this project, make sure to install eslint from terminal:
-  - `npm install -g eslint`
-- To use eslint to analyze this project use this command:
-  - `eslint main.ts`
-  - eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder:
-  - `eslint .\src\`
+No
 
+> Does it have error indicators when there's a syntax error?
 
-## API Documentation
+Also no
 
-See https://github.com/obsidianmd/obsidian-api
+> Ok what about... 
+
+Probably not, it's really simple plugin: one direct dependency and less than 100 lines. It's currently very easy to customize manually, which brings me too...
+
+## Contributing
+
+I'm more than happy to review any changes. When deciding to fork or PR, keep in mind that I value:
+- supporting mobile (no Node.js packages, only pure JS dependencies)
+- being small (no large dependencies, eg React.js)
+- being simple
