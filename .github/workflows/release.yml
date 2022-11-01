@@ -17,9 +17,15 @@ jobs:
       - name: detect new versions
         id: check-version
         uses: salsify/action-detect-and-tag-new-version@v2
-      - name: publish a release on new versions
-        uses: ncipollo/release-action@v1.7.3
+      - name: build for main.js
         if: steps.check-version.outputs.tag
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: yarn run build
+      - name: publish a release on new versions
+        if: steps.check-version.outputs.tag
+        uses: ncipollo/release-action@v1.7.3
         with:
           tag: ${{ steps.check-version.outputs.tag }}
           artifacts: "main.js,manifest.json"
