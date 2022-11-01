@@ -22,6 +22,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+      - run: yarn install
       - run: yarn run build
       - name: publish a release on new versions
         if: steps.check-version.outputs.tag
