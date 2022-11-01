@@ -7,9 +7,9 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    steps:
-      permissions:
+    permissions:
         contents: write
+    steps:
       - name: checkout
         uses: actions/checkout@v3
         with:
