@@ -2,20 +2,26 @@ name: Release Package
 
 on:
   push:
-    tags:
-      - "v*.*.*"
+    branches: ['master']
 
 jobs:
-  releast:
+  release:
     runs-on: ubuntu-latest
     steps:
+      permissions:
+        contents: write
       - name: checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 2
+      - name: detect new versions
+        id: check-version
+        uses: salsify/action-detect-and-tag-new-version@v2
       - name: publish a release on new versions
         uses: softprops/action-gh-release@v1
+        if: steps.check-version.outputs.tag
         with:
+          tag_name: ${{ steps.check-version.outputs.tag }}
           files: |
             manifest.json
             main.js
