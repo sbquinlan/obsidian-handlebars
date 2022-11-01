@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-handlebars",
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"description": "This is a plugin for Obsidian that adds support for handlebars blocks in notes.",
 	"repository": "git@github.com:sbquinlan/etf-holdings.git",
 	"author": "Sean Quinlan <1011062+sbquinlan@users.noreply.github.com>",

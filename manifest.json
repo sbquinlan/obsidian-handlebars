@@ -1,10 +1,10 @@
 {
 	"id": "obsidian-handlebars",
 	"name": "Obsidian Handlebars Template Plugin",
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"minAppVersion": "1.0.0",
 	"description": "This is a plugin for Obsidian that adds support for handlebars template blocks in notes.",
-	"author": "Sean Quinlan <1011062+sbquinlan@users.noreply.github.com>",
-	"authorUrl": "https://github.com/sbquinlan/obsidian-handlebars",
+	"author": "Sean Quinlan",
+	"authorUrl": "https://github.com/sbquinlan",
 	"isDesktopOnly": false
 }
