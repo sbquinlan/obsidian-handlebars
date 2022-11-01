@@ -14,11 +14,13 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 2
+
       - name: detect new versions
         id: check-version
         uses: salsify/action-detect-and-tag-new-version@v2
         with:
-          tag-template: {VERSION}
+          tag-template: "{VERSION}"
+
       - name: build for main.js
         if: steps.check-version.outputs.tag
         uses: actions/setup-node@v3
@@ -26,6 +28,7 @@ jobs:
           node-version: 16
       - run: yarn install
       - run: yarn run build
+
       - name: publish a release on new versions
         if: steps.check-version.outputs.tag
         uses: ncipollo/release-action@v1.7.3
