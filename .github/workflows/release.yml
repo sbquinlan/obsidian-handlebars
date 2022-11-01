@@ -17,6 +17,8 @@ jobs:
       - name: detect new versions
         id: check-version
         uses: salsify/action-detect-and-tag-new-version@v2
+        with:
+          tag-template: {VERSION}
       - name: build for main.js
         if: steps.check-version.outputs.tag
         uses: actions/setup-node@v3
