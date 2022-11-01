@@ -71,7 +71,7 @@ export default class MyPlugin extends Plugin {
 						// @ts-ignore: docs say this is optional
 						undefined,
 					);
-				} catch (e: any) {
+				} catch (e) {
 					console.warn(e);
 				}
 			},

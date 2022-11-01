@@ -5,8 +5,15 @@
 *.iml
 .idea
 
-# npm
+# yarn
 node_modules
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 
 # Don't include the compiled main.js file in the repo.
 # They should be uploaded to GitHub releases instead.
