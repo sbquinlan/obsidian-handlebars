@@ -34,7 +34,7 @@ interface NoteMetadata {
   'name': string,
   'path': string, 
   'extension': string,
-	'frontmatter'?: Record<string, any>
+  'frontmatter'?: Record<string, any>
 }
 ```
 
